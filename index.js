@@ -46,15 +46,15 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/twitter", (req, res) => {
+app.get("api/twitter", (req, res) => {
   res.send("suryathombare");
 });
 
-app.get("/login", (req, res) => {
+app.get("api/login", (req, res) => {
   res.send("<h1>Please login first</h1>");
 });
 
-app.get("/github", (req, res) => {
+app.get("api/github", (req, res) => {
   res.send(githubData);
 });
 

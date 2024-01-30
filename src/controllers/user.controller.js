@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import ApiError from "../utils/ApiErrors.Js";
+import { ApiError } from "../utils/ApiErrors.js";
 import { User } from "../model/user.models.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -15,18 +15,14 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // return response
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { fullname, username, email } = req.body;
+  const { fullname, username, email, password } = req.body;
   console.log(fullname, username, email);
-
-  // if(fullname === "") {
-  //   throw new ApiError(400, "Fullname is required")
-  // }
 
   if ([fullname, username, email].some((fields) => fields.trim() === "")) {
     throw new ApiError(400, "All fields are required");
   }
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 

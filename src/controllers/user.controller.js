@@ -7,8 +7,12 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
+
+    console.log(
+      "Access token: " + accessToken + ", refresh token: " + refreshToken
+    );
 
     user.refreshToken = refreshToken;
     // user.accessToken = accessToken;
@@ -103,8 +107,8 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
-  if (!username || !email) {
-    throw new ApiError(400, "username or email is");
+  if (!username && !email) {
+    throw new ApiError(400, "username or email is required");
   }
 
   const user = await User.findOne({
@@ -134,10 +138,14 @@ const loginUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
+  // console.log(
+  //   "Access token: " + accessToken + ", refresh token: " + refreshToken
+  // );
+
   return res
     .status(200)
-    .cookie("access_token", accessToken, options)
-    .cookie("refresh_token", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
         200,
